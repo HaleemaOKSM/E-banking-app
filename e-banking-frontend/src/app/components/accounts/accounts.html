@@ -1,0 +1,143 @@
+<div class="page-header d-flex align-items-center justify-content-between">
+  <div>
+    <h2><i class="bi bi-credit-card-2-front-fill me-2"></i>Gestion des Comptes</h2>
+    <p>{{ accounts.length }} compte(s)
+      <span *ngIf="filterCustomerId"> — filtré par client #{{ filterCustomerId }}</span>
+    </p>
+  </div>
+  <div class="d-flex gap-2">
+    <button class="btn btn-outline-primary" (click)="openModal('current')">
+      <i class="bi bi-plus-circle me-1"></i>Compte courant
+    </button>
+    <button class="btn btn-primary" (click)="openModal('saving')">
+      <i class="bi bi-plus-circle-fill me-1"></i>Compte épargne
+    </button>
+  </div>
+</div>
+
+<div class="alert alert-success" *ngIf="successMsg">
+  <i class="bi bi-check-circle-fill me-2"></i>{{ successMsg }}
+</div>
+<div class="alert alert-danger" *ngIf="error && !showModal">
+  <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ error }}
+</div>
+
+<div class="loading-overlay" *ngIf="loading && !showModal">
+  <div class="spinner-border text-primary"></div>
+</div>
+
+<!-- Accounts grid -->
+<div class="accounts-grid" *ngIf="!loading">
+  <div class="account-card" *ngFor="let account of accounts" [class.current-card]="account.type === 'CurrentAccount'" [class.saving-card]="account.type === 'SavingAccount'">
+    <div class="account-card-header">
+      <div class="account-type-badge">
+        <i [class]="'bi me-1 ' + (account.type === 'CurrentAccount' ? 'bi-credit-card' : 'bi-piggy-bank')"></i>
+        {{ account.type === 'CurrentAccount' ? 'Courant' : 'Épargne' }}
+      </div>
+      <div [class]="'badge-status ' + getStatusClass(account.status)">
+        {{ account.status }}
+      </div>
+    </div>
+
+    <div class="account-id">
+      <span>{{ account.id | slice:0:18 }}...</span>
+    </div>
+
+    <div class="account-balance">
+      <span class="balance-label">Solde</span>
+      <span class="balance-value">{{ account.balance | number:'1.2-2' }} {{ account.currency }}</span>
+    </div>
+
+    <div class="account-details">
+      <div class="detail-row">
+        <span class="detail-label"><i class="bi bi-person me-1"></i>Client</span>
+        <span class="detail-value">{{ account.customerDTO.name }}</span>
+      </div>
+      <div class="detail-row" *ngIf="account.type === 'CurrentAccount'">
+        <span class="detail-label"><i class="bi bi-arrow-down-circle me-1"></i>Découvert</span>
+        <span class="detail-value">{{ asCurrentAccount(account).overDraft | number:'1.2-2' }} {{ account.currency }}</span>
+      </div>
+      <div class="detail-row" *ngIf="account.type === 'SavingAccount'">
+        <span class="detail-label"><i class="bi bi-percent me-1"></i>Taux d'intérêt</span>
+        <span class="detail-value">{{ asSavingAccount(account).interestRate }}%</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label"><i class="bi bi-calendar me-1"></i>Créé le</span>
+        <span class="detail-value">{{ account.createdAt | date:'dd/MM/yyyy' }}</span>
+      </div>
+    </div>
+
+    <a [routerLink]="['/accounts', account.id]" class="btn-view-ops">
+      <i class="bi bi-clock-history me-1"></i>Voir opérations
+      <i class="bi bi-arrow-right ms-auto"></i>
+    </a>
+  </div>
+
+  <!-- Empty state -->
+  <div class="empty-state" *ngIf="accounts.length === 0">
+    <i class="bi bi-inbox"></i>
+    <p>Aucun compte trouvé</p>
+    <button class="btn btn-primary btn-sm" (click)="openModal('current')">Créer un compte</button>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-backdrop-custom" *ngIf="showModal" (click)="closeModal()"></div>
+<div class="modal-custom" *ngIf="showModal">
+  <div class="modal-custom-dialog">
+    <div class="modal-custom-header">
+      <h5>
+        <i [class]="'bi me-2 ' + (accountType === 'current' ? 'bi-credit-card' : 'bi-piggy-bank')"></i>
+        Nouveau compte {{ accountType === 'current' ? 'courant' : 'épargne' }}
+      </h5>
+      <button class="btn-close-custom" (click)="closeModal()"><i class="bi bi-x-lg"></i></button>
+    </div>
+
+    <form [formGroup]="accountForm" (ngSubmit)="saveAccount()" class="modal-custom-body">
+      <div class="alert alert-danger" *ngIf="error">{{ error }}</div>
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Client <span class="text-danger">*</span></label>
+        <select class="form-select" formControlName="customerId">
+          <option value="">-- Sélectionner un client --</option>
+          <option *ngFor="let c of customers" [value]="c.id">{{ c.name }} ({{ c.email }})</option>
+        </select>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Solde initial <span class="text-danger">*</span></label>
+          <div class="input-group">
+            <input type="number" class="form-control" formControlName="initialBalance" min="0" step="100">
+            <span class="input-group-text">{{ accountForm.get('currency')?.value }}</span>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Devise</label>
+          <select class="form-select" formControlName="currency">
+            <option value="MAD">MAD (Dirham)</option>
+            <option value="EUR">EUR (Euro)</option>
+            <option value="USD">USD (Dollar)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="mt-3" *ngIf="accountType === 'current'">
+        <label class="form-label fw-semibold">Plafond de découvert</label>
+        <input type="number" class="form-control" formControlName="overDraft" min="0">
+      </div>
+
+      <div class="mt-3" *ngIf="accountType === 'saving'">
+        <label class="form-label fw-semibold">Taux d'intérêt (%)</label>
+        <input type="number" class="form-control" formControlName="interestRate" min="0" max="100" step="0.1">
+      </div>
+
+      <div class="d-flex gap-2 justify-content-end mt-4">
+        <button type="button" class="btn btn-outline-secondary" (click)="closeModal()">Annuler</button>
+        <button type="submit" class="btn btn-primary" [disabled]="accountForm.invalid || loading">
+          <i class="bi bi-check-lg me-1"></i>Créer le compte
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

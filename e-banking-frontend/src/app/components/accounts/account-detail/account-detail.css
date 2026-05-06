@@ -1,0 +1,171 @@
+.btn-back {
+  display: flex; align-items: center; justify-content: center;
+  width: 38px; height: 38px;
+  background: #fff;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  text-decoration: none;
+  transition: var(--transition);
+  flex-shrink: 0;
+}
+.btn-back:hover { background: var(--primary-light); color: #fff; border-color: var(--primary-light); }
+
+/* Account info row */
+.account-info-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.account-info-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  box-shadow: var(--shadow);
+}
+
+.account-info-card.balance-highlight {
+  background: var(--primary-dark);
+  border-color: var(--primary-dark);
+}
+
+.balance-highlight .info-label { color: rgba(255,255,255,0.6); }
+.balance-highlight .info-value { color: #fff; }
+
+.info-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.info-value {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.info-value.balance {
+  font-size: 1.3rem;
+  font-family: 'Playfair Display', serif;
+}
+
+/* Operations bar */
+.operations-bar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.op-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 0.88rem;
+  border: 2px solid;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: 'DM Sans', sans-serif;
+}
+
+.debit-btn   { background: rgba(231,76,60,0.08);  border-color: var(--danger);  color: var(--danger); }
+.credit-btn  { background: rgba(46,204,113,0.08); border-color: var(--success); color: var(--success); }
+.transfer-btn{ background: rgba(42,82,152,0.08);  border-color: var(--primary-light); color: var(--primary-light); }
+
+.debit-btn:hover    { background: var(--danger);        color: #fff; }
+.credit-btn:hover   { background: var(--success);       color: #fff; }
+.transfer-btn:hover { background: var(--primary-light); color: #fff; }
+
+/* Operation panel */
+.operation-panel {
+  background: #fff;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.operation-panel-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.operation-panel-header h6 {
+  margin: 0; font-weight: 700; color: var(--primary);
+}
+
+.table-toolbar { border-bottom: 1px solid var(--border); }
+
+/* Operation type badge */
+.op-type {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.op-credit { background: rgba(46,204,113,0.12); color: #27ae60; }
+.op-debit  { background: rgba(231,76,60,0.12);  color: #c0392b; }
+
+/* Amount */
+.op-amount {
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.amount-credit { color: #27ae60; }
+.amount-debit  { color: var(--danger); }
+
+/* Pagination */
+.pagination-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 20px;
+  border-top: 1px solid var(--border);
+}
+
+.pg-btn {
+  width: 34px; height: 34px;
+  background: none;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text);
+  transition: var(--transition);
+}
+
+.pg-btn:hover:not(:disabled) {
+  background: var(--primary-light);
+  border-color: var(--primary-light);
+  color: #fff;
+}
+
+.pg-btn.active {
+  background: var(--primary-light);
+  border-color: var(--primary-light);
+  color: #fff;
+  font-weight: 700;
+}
+
+.pg-btn:disabled { opacity: 0.4; cursor: not-allowed; }

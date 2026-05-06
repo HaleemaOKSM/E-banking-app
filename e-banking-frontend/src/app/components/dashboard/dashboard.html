@@ -1,0 +1,157 @@
+<!-- Welcome header -->
+<div class="dash-welcome">
+  <div>
+    <h2>{{ getGreeting() }}, <span class="highlight">{{ username }}</span> 👋</h2>
+    <p>{{ currentDate | date:"EEEE d MMMM yyyy" : '' : 'fr' }} — Vue d'ensemble de votre activité bancaire</p>
+  </div>
+  <button class="btn btn-outline-primary btn-sm" (click)="loadStats()">
+    <i class="bi bi-arrow-clockwise me-1"></i>Actualiser
+  </button>
+</div>
+
+<div class="loading-overlay" *ngIf="loading">
+  <div class="spinner-border text-primary"></div>
+</div>
+
+<ng-container *ngIf="!loading && stats">
+
+  <!-- KPI Cards -->
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:rgba(42,82,152,0.1); color:var(--primary-light)">
+        <i class="bi bi-people-fill"></i>
+      </div>
+      <div class="kpi-body">
+        <div class="kpi-value">{{ stats.totalCustomers }}</div>
+        <div class="kpi-label">Clients</div>
+      </div>
+      <a routerLink="/customers" class="kpi-action"><i class="bi bi-arrow-right"></i></a>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:rgba(52,152,219,0.1); color:var(--info)">
+        <i class="bi bi-credit-card-2-front-fill"></i>
+      </div>
+      <div class="kpi-body">
+        <div class="kpi-value">{{ stats.totalAccounts }}</div>
+        <div class="kpi-label">Comptes</div>
+      </div>
+      <a routerLink="/accounts" class="kpi-action"><i class="bi bi-arrow-right"></i></a>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:rgba(240,165,0,0.1); color:var(--accent)">
+        <i class="bi bi-receipt"></i>
+      </div>
+      <div class="kpi-body">
+        <div class="kpi-value">{{ stats.totalOperations }}</div>
+        <div class="kpi-label">Opérations</div>
+      </div>
+      <div class="kpi-action text-muted"><i class="bi bi-three-dots"></i></div>
+    </div>
+
+    <div class="kpi-card highlight-card">
+      <div class="kpi-icon" style="background:rgba(255,255,255,0.15); color:#fff">
+        <i class="bi bi-wallet2"></i>
+      </div>
+      <div class="kpi-body">
+        <div class="kpi-value">{{ formatAmount(stats.totalBalance) }} MAD</div>
+        <div class="kpi-label">Solde total</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts row -->
+  <div class="charts-row">
+    <!-- Bar chart - operations per month -->
+    <div class="card chart-card">
+      <div class="chart-header">
+        <div>
+          <h6 class="chart-title">Opérations par mois</h6>
+          <p class="chart-sub">{{ stats.totalOperations }} opérations au total</p>
+        </div>
+      </div>
+      <div class="bar-chart">
+        <div class="bar-group" *ngFor="let month of chartMonths; let i = index">
+          <div class="bar-wrapper">
+            <div class="bar-value">{{ chartValues[i] }}</div>
+            <div class="bar" [style.height.%]="getBarHeight(chartValues[i])"></div>
+          </div>
+          <div class="bar-label">{{ month }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right column -->
+    <div class="right-col">
+      <!-- Credit vs Debit -->
+      <div class="card p-4 mb-4">
+        <h6 class="chart-title mb-3">Flux Financiers</h6>
+        <div class="flow-item credit-flow">
+          <div class="flow-icon"><i class="bi bi-arrow-down-circle-fill"></i></div>
+          <div class="flow-body">
+            <div class="flow-label">Crédits totaux</div>
+            <div class="flow-value">{{ formatAmount(stats.totalCredits) }} MAD</div>
+            <div class="flow-bar">
+              <div class="flow-bar-fill credit-fill" [style.width.%]="80"></div>
+            </div>
+          </div>
+        </div>
+        <div class="flow-item debit-flow mt-3">
+          <div class="flow-icon"><i class="bi bi-arrow-up-circle-fill"></i></div>
+          <div class="flow-body">
+            <div class="flow-label">Débits totaux</div>
+            <div class="flow-value">{{ formatAmount(stats.totalDebits) }} MAD</div>
+            <div class="flow-bar">
+              <div class="flow-bar-fill debit-fill"
+                   [style.width.%]="stats.totalCredits > 0 ? (stats.totalDebits / stats.totalCredits * 100) : 0">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Account types -->
+      <div class="card p-4">
+        <h6 class="chart-title mb-3">Types de comptes</h6>
+        <div class="account-type-stats">
+          <div class="type-stat">
+            <div class="type-icon current-type"><i class="bi bi-credit-card"></i></div>
+            <div>
+              <div class="type-value">{{ stats.totalCurrentAccounts }}</div>
+              <div class="type-label">Courants</div>
+            </div>
+          </div>
+          <div class="type-divider"></div>
+          <div class="type-stat">
+            <div class="type-icon saving-type"><i class="bi bi-piggy-bank"></i></div>
+            <div>
+              <div class="type-value">{{ stats.totalSavingAccounts }}</div>
+              <div class="type-label">Épargnes</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick actions -->
+  <div class="quick-actions">
+    <h6 class="section-title">Actions rapides</h6>
+    <div class="qa-grid">
+      <a routerLink="/customers" class="qa-card">
+        <i class="bi bi-person-plus-fill"></i>
+        <span>Nouveau client</span>
+      </a>
+      <a routerLink="/accounts" class="qa-card">
+        <i class="bi bi-credit-card-2-front-fill"></i>
+        <span>Nouveau compte</span>
+      </a>
+      <a routerLink="/accounts" class="qa-card">
+        <i class="bi bi-arrow-left-right"></i>
+        <span>Virement</span>
+      </a>
+    </div>
+  </div>
+
+</ng-container>
