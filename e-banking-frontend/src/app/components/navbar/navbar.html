@@ -30,11 +30,12 @@
     </a>
 
     <p class="nav-section-label mt-3">ADMINISTRATION</p>
-
-    <a routerLink="/admin/users" routerLinkActive="active" class="nav-link" *ngIf="isAdmin">
+    @if (isAdmin) {
+    <a routerLink="/admin/users" routerLinkActive="active" class="nav-link" >
       <i class="bi bi-shield-lock-fill"></i>
       <span>Utilisateurs</span>
     </a>
+    }
   </nav>
 
   <!-- User section -->

@@ -9,7 +9,7 @@ import { jwtDecode } from 'jwt-decode';
 
 interface JwtPayload {
   sub: string;
-  roles: string[];
+  role: string;
   exp: number;
   iat: number;
 }
@@ -27,7 +27,6 @@ export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  // ✅ SAFE STORAGE
   private loadFromStorage(): AuthResponse | null {
     if (!this.isBrowser) return null;
 
@@ -47,13 +46,31 @@ export class AuthService {
   }
 
   login(credentials: LoginRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/auth/login`, credentials).pipe(
+    return this.http.post<any>(`${this.apiUrl}/auth/login`, credentials).pipe(
       tap(response => {
         if (this.isBrowser) {
+          const decoded: any = jwtDecode(response.accessToken);
+
+          console.log('decoded token:', decoded);
+          console.log('scope:', decoded.scope);
+
+          // Extract roles from the JWT scope claim directly
+          const roles: string[] = decoded.scope
+            ? decoded.scope.split(' ').map((r: string) => r.trim()).filter(Boolean)
+            : [];
+
+          console.log('extracted roles:', roles);
+
+          const user: AuthResponse = {
+            accessToken: response.accessToken,
+            username: decoded.sub,
+            roles: roles   // ← from JWT, not from response.roles
+          };
+
           localStorage.setItem('auth_token', response.accessToken);
-          localStorage.setItem('auth_user', JSON.stringify(response));
+          localStorage.setItem('auth_user', JSON.stringify(user));
+          this.currentUserSubject.next(user);
         }
-        this.currentUserSubject.next(response);
       })
     );
   }
@@ -90,11 +107,15 @@ export class AuthService {
 
   hasRole(role: string): boolean {
     const user = this.getCurrentUser();
-    return user?.roles?.includes(role) ?? false;
+    if (!user?.roles) return false;
+    const rolesArray = Array.isArray(user.roles)
+      ? user.roles
+      : String(user.roles).split(' ');
+    return rolesArray.includes(role);
   }
 
   isAdmin(): boolean {
-    return this.hasRole('ADMIN') || this.hasRole('ROLE_ADMIN');
+    return this.hasRole('admin') || this.hasRole('ROLE_ADMIN');
   }
 
   getUsername(): string {

@@ -4,6 +4,7 @@ import com.example.demo.dtos.*;
 import com.example.demo.exceptions.BalanceNotSufficientException;
 import com.example.demo.exceptions.BankAccountNotFoundException;
 import com.example.demo.services.BankAccountService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -53,5 +54,24 @@ public class BankAccountRestAPI {
                 transferRequestDTO.getAccountSource(),
                 transferRequestDTO.getAccountDestination(),
                 transferRequestDTO.getAmount());
+    }
+    @PostMapping("/accounts/current")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public BankAccountDTO saveCurrentAccount(
+            @RequestParam Long customerId,
+            @RequestParam double initialBalance,
+            @RequestParam double overDraft,
+            @RequestParam String currency) throws Exception {
+        return bankAccountService.saveCurrentBankAccount(initialBalance, overDraft, customerId);
+    }
+
+    @PostMapping("/accounts/saving")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public BankAccountDTO saveSavingAccount(
+            @RequestParam Long customerId,
+            @RequestParam double initialBalance,
+            @RequestParam double interestRate,
+            @RequestParam String currency) throws Exception {
+        return bankAccountService.saveSavingBankAccount(initialBalance, interestRate, customerId);
     }
 }

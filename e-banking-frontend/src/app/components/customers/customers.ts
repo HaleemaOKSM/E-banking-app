@@ -5,6 +5,7 @@ import { RouterLink } from '@angular/router';
 import { CustomerService } from '../../services/customer';
 import { Customer } from '../../models/customer.model';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-customers',
@@ -27,14 +28,21 @@ export class Customers implements OnInit {
   searchInput = new Subject<string>();
   deleteConfirmId: number | null = null;
 
-  constructor(private customerService: CustomerService, private fb: FormBuilder) {
+  isAdmin = false;
+
+
+  constructor(private customerService: CustomerService, private fb: FormBuilder,  private authService: AuthService) {
     this.customerForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]]
-    });
-  }
 
+    });
+
+  }
   ngOnInit(): void {
+    this.authService.currentUser$.subscribe(user => {
+      this.isAdmin = this.authService.isAdmin();
+    });
     this.loadCustomers();
     this.searchInput.pipe(debounceTime(300), distinctUntilChanged())
       .subscribe(keyword => this.filterCustomers(keyword));

@@ -23,6 +23,8 @@ export class Dashboard implements OnInit {
   chartMonths: string[] = [];
   chartValues: number[] = [];
   maxChartValue = 1;
+  isAdmin = false;
+
 
   constructor(
     private dashboardService: DashboardService,
@@ -31,6 +33,9 @@ export class Dashboard implements OnInit {
 
   ngOnInit(): void {
     this.username = this.authService.getUsername();
+    this.authService.currentUser$.subscribe(user => {
+      this.isAdmin = this.authService.isAdmin();
+    });
     this.loadStats();
   }
 

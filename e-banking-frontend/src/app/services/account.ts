@@ -44,14 +44,16 @@ export class AccountService {
   }
 
   saveCurrentAccount(customerId: number, initialBalance: number, overDraft: number, currency: string): Observable<BankAccount> {
-    return this.http.post<BankAccount>(`${this.apiUrl}/accounts/current`, {
-      customerId, initialBalance, overDraft, currency
-    });
+    return this.http.post<BankAccount>(
+      `${this.apiUrl}/accounts/current`, null,
+      { params: { customerId, initialBalance, overDraft, currency } }
+    );
   }
 
   saveSavingAccount(customerId: number, initialBalance: number, interestRate: number, currency: string): Observable<BankAccount> {
-    return this.http.post<BankAccount>(`${this.apiUrl}/accounts/saving`, {
-      customerId, initialBalance, interestRate, currency
-    });
+    return this.http.post<BankAccount>(
+      `${this.apiUrl}/accounts/saving`, null,
+      { params: { customerId, initialBalance, interestRate, currency } }
+    );
   }
 }

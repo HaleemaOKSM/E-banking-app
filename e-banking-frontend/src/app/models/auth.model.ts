@@ -5,10 +5,8 @@ export interface LoginRequest {
 
 export interface AuthResponse {
   accessToken: string;
-  tokenType: string;
   username: string;
   roles: string[];
-  expiresIn: number;
 }
 
 export interface AppUser {
