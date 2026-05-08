@@ -8,16 +8,19 @@ import { AuthService } from '../../services/auth';
   standalone: true,
   imports: [CommonModule, RouterLink],
   templateUrl: './navbar.html',
-  styleUrls: ['./navbar.css']
+  styleUrls: ['./navbar.css'],
 })
 export class Navbar implements OnInit {
   username = '';
   isAdmin = false;
 
-  constructor(public authService: AuthService, private router: Router) {}
+  constructor(
+    public authService: AuthService,
+    private router: Router,
+  ) {}
 
   ngOnInit(): void {
-    this.authService.currentUser$.subscribe(user => {
+    this.authService.currentUser$.subscribe((user) => {
       this.username = user?.username ?? '';
       this.isAdmin = this.authService.isAdmin();
     });

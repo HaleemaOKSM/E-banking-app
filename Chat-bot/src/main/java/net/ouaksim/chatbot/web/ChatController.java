@@ -3,6 +3,7 @@ package net.ouaksim.chatbot.web;
 import net.ouaksim.chatbot.agents.AIAgent;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,7 +12,7 @@ import reactor.core.publisher.Flux;
 import java.awt.*;
 
 @RestController
-
+@CrossOrigin("*")
 public class ChatController {
     private AIAgent aiAgent;
 

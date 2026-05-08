@@ -48,8 +48,7 @@
 
 /* Nav */
 .sidebar-nav {
-  flex: 1;
-  padding: 20px 12px;
+  padding: 20px 12px 12px;
   overflow-y: auto;
 }
 
@@ -77,16 +76,9 @@
   margin-bottom: 2px;
 }
 
-.nav-link i {
-  font-size: 1.05rem;
-  width: 20px;
-  text-align: center;
-}
+.nav-link i { font-size: 1.05rem; width: 20px; text-align: center; }
 
-.nav-link:hover {
-  background: rgba(255,255,255,0.07);
-  color: #fff;
-}
+.nav-link:hover { background: rgba(255,255,255,0.07); color: #fff; }
 
 .nav-link.active {
   background: rgba(240,165,0,0.15);
@@ -94,9 +86,59 @@
   font-weight: 600;
 }
 
-.nav-link.active i {
-  color: var(--accent);
+.nav-link.active i { color: var(--accent); }
+
+/* ═══ CHATBOT SECTION ═══════════════════════════════════════ */
+.chatbot-section {
+  padding: 0 12px 12px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
 }
+
+/* Override the trigger button to fit the sidebar style */
+.chatbot-section ::ng-deep .chat-trigger {
+  width: 100%;
+  justify-content: flex-start;
+  border-radius: 10px;
+  padding: 11px 12px;
+  gap: 12px;
+  background: rgba(240, 165, 0, 0.12);
+  border: 1.5px solid rgba(240, 165, 0, 0.25);
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.9rem;
+}
+
+.chatbot-section ::ng-deep .chat-trigger:hover,
+.chatbot-section ::ng-deep .chat-trigger.active {
+  background: rgba(240, 165, 0, 0.22);
+  border-color: rgba(240, 165, 0, 0.5);
+  color: #fff;
+  transform: none;
+  box-shadow: none;
+}
+
+.chatbot-section ::ng-deep .trigger-icon {
+  width: 22px; height: 22px;
+  background: rgba(240, 165, 0, 0.25);
+  flex-shrink: 0;
+}
+
+.chatbot-section ::ng-deep .trigger-badge {
+  margin-left: auto;
+}
+
+.ai-hint {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  color: rgba(255,255,255,0.3);
+  font-size: 0.7rem;
+  font-style: italic;
+}
+
+.ai-hint i { color: rgba(240,165,0,0.5); font-size: 0.75rem; }
+/* ══════════════════════════════════════════════════════════ */
 
 /* Footer */
 .sidebar-footer {
@@ -105,14 +147,11 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  margin-top: auto;
 }
 
 .user-card {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex: 1;
-  overflow: hidden;
+  display: flex; align-items: center; gap: 10px; flex: 1; overflow: hidden;
 }
 
 .user-avatar {
@@ -120,44 +159,26 @@
   background: var(--accent);
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  font-weight: 700;
-  font-size: 0.9rem;
-  color: #fff;
-  flex-shrink: 0;
+  font-weight: 700; font-size: 0.9rem; color: #fff; flex-shrink: 0;
 }
 
 .user-info { overflow: hidden; }
 
 .user-name {
-  color: #fff;
-  font-size: 0.85rem;
-  font-weight: 600;
-  margin: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  color: #fff; font-size: 0.85rem; font-weight: 600;
+  margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 
-.user-role {
-  color: rgba(255,255,255,0.4);
-  font-size: 0.72rem;
-  margin: 0;
-}
+.user-role { color: rgba(255,255,255,0.4); font-size: 0.72rem; margin: 0; }
 
 .btn-logout {
   width: 34px; height: 34px;
   background: rgba(255,255,255,0.07);
-  border: none;
-  border-radius: 8px;
+  border: none; border-radius: 8px;
   color: rgba(255,255,255,0.5);
   cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  font-size: 1rem;
-  transition: all 0.18s;
-  flex-shrink: 0;
+  font-size: 1rem; transition: all 0.18s; flex-shrink: 0;
 }
 
-.btn-logout:hover {
-  background: rgba(231,76,60,0.2);
-  color: #e74c3c;
-}
+.btn-logout:hover { background: rgba(231,76,60,0.2); color: #e74c3c; }

@@ -30,13 +30,23 @@
     </a>
 
     <p class="nav-section-label mt-3">ADMINISTRATION</p>
-    @if (isAdmin) {
-    <a routerLink="/admin/users" routerLinkActive="active" class="nav-link" >
+
+    <a routerLink="/admin/users" routerLinkActive="active" class="nav-link" *ngIf="isAdmin">
       <i class="bi bi-shield-lock-fill"></i>
       <span>Utilisateurs</span>
     </a>
-    }
   </nav>
+
+  <!-- ══ CHATBOT SECTION ══════════════════════════════════ -->
+  <p class="nav-section-label mt-3">ASSISTANT IA</p>
+
+  <a routerLink="/chatbot"
+     routerLinkActive="active"
+     class="nav-link">
+    <i class="bi bi-robot"></i>
+    <span>Assistant IA</span>
+  </a>
+  <!-- ══════════════════════════════════════════════════════ -->
 
   <!-- User section -->
   <div class="sidebar-footer">

@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './guards/auth-guard';
+import { ChatBot } from './components/chat-bot/chat-bot';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
@@ -26,6 +27,10 @@ export const routes: Routes = [
     path: 'accounts/:id',
     loadComponent: () => import('./components/accounts/account-detail/account-detail').then(m => m.AccountDetail),
     canActivate: [authGuard]
+  },
+  {
+    path: 'chatbot',
+    component: ChatBot
   },
   {
     path: '**',
